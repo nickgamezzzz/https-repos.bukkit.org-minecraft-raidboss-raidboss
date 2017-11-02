@@ -1,0 +1,64 @@
+#Raidboss Skript by Nickgamezzzz
+
+#health: 100
+#Skills: Launch, Spawn, Drain Souls
+#Stages: 3, name, Health, variable
+
+on rightclick:
+	clicked block is a dragon egg
+	delete event-block
+	broadcast "<aqua>De Zombie Boss wordt gespawnd door &e%player%"
+	create a fake explosion at event-block
+	apply slowness 6 to player for 2 seconds
+	wait 2 seconds
+	#Spawn
+	#land hoi
+	spawn 1 zombie at location of player
+	loop all entities in radius 1 around player:
+		set loop-entity's max health to 100
+		set loop-entity's health to 100
+		set {Raidboss.name::%loop-entity%} to "ZombieBoss"
+		apply strength 3 to loop-entity for 5 minutes
+
+#stage 1 
+on damage:
+	{Raidboss.name::%victim%} is "ZombieBoss"
+	victim's health is below 99:
+		if {Raidboss.stageOne} is not set:
+			set {Raidboss.stageOne} to true
+			broadcast "<aqua>De Zombie Boss doet zijn &elaunch Skill!"
+			loop 1 times:
+				loop all players in radius 20 around victim:
+					teleport loop-player to the block 2 above victim
+					wait 0.1 seconds
+				wait 1 tick
+				loop all players in radius 20 around victim:
+					push loop-player upwards at speed 4
+					create a fake explosion at loop-player 
+
+#stage 2
+on damage:
+	{Raidboss.name::%victim%} is "ZombieBoss"
+	victim's health is below 35:
+		if {Raidboss.stageThree} is not set:
+			set {Raidboss.stageThree} to true
+			broadcast "<aqua>De Zombie Boss doet zijn Spawn 2 Skil"
+			loop 2 times:
+				spawn 1 skeleton at location of victim
+
+#stage 3
+on damage:
+	{Raidboss.name::%victim%} is "ZombieBoss"
+	victim's health is below 15:
+		if {Raidboss.stagetwo} is not set:
+			set {Raidboss.stagetwo} to true
+			broadcast "<aqua>De Zombie Boss doet zijn Spawn Skill"
+			loop 2 times:
+				spawn 10 skeleton at location of victim
+
+on death:
+	{Raidboss.name::%victim%} is "ZombieBoss"
+	delete {Raidboss.stageOne}
+	delete {Raidboss.stageTwo}
+	delete {Raidboss.stageThree}
+	broadcast "<aqua>De Zombie Boss is gekilled door &e%attacker%"
